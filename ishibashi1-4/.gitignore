@@ -3,3 +3,36 @@ __pycache__/
 .env
 .DS_Store
 .streamlit/
+# DB
+*.db
+*.sqlite
+*.sqlite3
+
+# JSON
+*.json
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.webp
+
+# Videos
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.mp3
+
+# Python cache
+__pycache__/
+*.pyc
+
+# venv
+venv/
+
+.python-version
+
+requirements.txt
