@@ -132,6 +132,30 @@ def run():
                     st.download_button("音声をダウンロード", f, file_name="output_beep.mp3")
 
             if hit_segments:
+                # --- ここを追加 ---
+                # 他のプログラム（system3.pyなど）で使っている関数を呼び出す
+                stats_db.add_count(username) 
+                # -----------------
+                # ✅ 誹謗中傷だった場合のみ
+            if hit_segments:
+                # --- ここから修正版：重複カウント防止ロジック ---
+                
+                # 1. この処理独自の「イベントキー」を作る
+                # ファイル名と検出したテキストを組み合わせてハッシュ化
+                combined_text = "".join([seg.get("text", "") for seg in hit_segments])
+                event_key = f"voice_{hash(uploaded.name + combined_text)}"
+
+                # 2. セッション状態で重複をチェック（system3.pyと同じ仕組み）
+                if "last_voice_event" not in st.session_state:
+                    st.session_state.last_voice_event = None
+
+                if event_key != st.session_state.last_voice_event:
+                    stats_db.add_count(username)
+                    st.session_state.last_voice_event = event_key
+                    st.warning("⚠️ 不適切な表現が検知されたため、履歴に記録しました。")
+                
+                # --- ここまで ---
+
                 st.subheader("検出内容(先頭10件)")
                 for seg in hit_segments[:10]:
                     start = seg.get("start", 0)
@@ -141,3 +165,7 @@ def run():
             else:
                 st.subheader("検出結果")
                 st.write("誹謗中傷ワードは検出されませんでした。")
+
+        # 最後に現在の累計を表示すると親切です
+        st.divider()
+        st.metric("🚨 現在の累計ペナルティ数", stats_db.get_count(username))
