@@ -7,7 +7,7 @@ import streamlit as st
 import stats_db
 stats_db.init_db()
 
-username = "test_user"   # 今は仮（後でGoogleログイン）
+username = "test_user"   
 
 try:
     import unidic_lite
@@ -46,7 +46,6 @@ def analyze_level2(text, dictionary):
 
 def check_toxicity_with_ai(text):
     """AIに、その文章が攻撃的・ネガティブかどうかを判定させる"""
-    # このプロンプトにより、辞書にない嫌味なども検知可能になります
     prompt = (
         f"以下の文章が、他人を不快にさせる表現、攻撃的な意図、またはネガティブな感情を含んでいるか判定してください。"
         f"判定結果は、含んでいるなら 'YES'、含まない（クリーン）なら 'NO' とだけ回答してください。\n\n"
@@ -56,7 +55,7 @@ def check_toxicity_with_ai(text):
         response = ollama.chat(model='llama3.2:3b', messages=[{'role': 'user', 'content': prompt}])
         return "YES" in response['message']['content'].upper()
     except:
-        return False # エラー時は安全のためFalse（または辞書判定に頼る）
+        return False
 
 def call_ai_cleaner(text, targets, insults, dictionary):
     target_info = f"（対象：{', '.join(targets)}）" if targets else "その方"
@@ -170,7 +169,7 @@ def run():
 
         event_key = f"{username}_{hash(text)}"
 
-        # ✅ 誹謗中傷だった場合のみ
+        #  誹謗中傷だった場合のみ
         if is_aggressive:
 
             # DBは1投稿1回だけ
@@ -186,11 +185,11 @@ def run():
             except Exception as ex:
                 st.error(f"変換中にエラーが発生しました: {ex}")
 
-        # ✅ クリーン文章は変換しない
+        # クリーン文章は変換しない
         else:
             st.info("この文章はすでにクリーンです。変換の必要はありません ✨")
 
-        # ✅ 表示は常にDBから
+        # 表示は常にDBから
         st.metric("誹謗中傷試行回数", stats_db.get_count(username))
 
     if __name__ == "__main__":

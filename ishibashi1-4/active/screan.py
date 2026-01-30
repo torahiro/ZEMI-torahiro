@@ -124,7 +124,7 @@ def run():
                             st.image(CENSOR_IMAGE_PATH, caption="※放送倫理規定により映像を差し替えました。", use_container_width=True)
                         st.info(f"【判定理由】\n{response_text}")
                     else:
-                        st.success("✅ 放送倫理上、問題ありません。")
+                        st.success(" 放送倫理上、問題ありません。")
                         st.image(image_bytes, caption="安全なコンテンツ", use_container_width=True)
 
                 except RuntimeError as e:
@@ -132,4 +132,4 @@ def run():
 
                 st.divider()
                 count = stats_db.get_count(username)
-                st.metric("🚨 検知された誹謗中傷回数", count)
+                st.metric("🚫 検知された誹謗中傷回数", count)
