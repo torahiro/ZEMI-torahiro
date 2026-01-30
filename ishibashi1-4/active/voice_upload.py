@@ -168,4 +168,4 @@ def run():
 
         # 最後に現在の累計を表示すると親切です
         st.divider()
-        st.metric("🚨 現在の累計ペナルティ数", stats_db.get_count(username))
+        st.metric("⚠️ 現在の累計ペナルティ数", stats_db.get_count(username))
